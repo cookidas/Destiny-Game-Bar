@@ -1,9 +1,10 @@
-# Destiny Game Bar
-
 - [English](#english)
 - [한국어](#한국어)
 
+- 
 ## English
+# Destiny2 Game Bar
+
 An unofficial widget for accessing DIM and other Destiny-related websites inside Xbox Game Bar on Windows 11. It uses a single WebView2 instance to navigate between sites and includes a workaround for the mouse drag-and-drop issues found in the standard browser widget.
 
 ## Installation
@@ -63,7 +64,7 @@ The MIT notice for the portions based on WidgetSampleCS from Microsoft's XboxGam
 
 
 ## 한국어
-# Destiny Game Bar
+# 데스티니 가디언즈 게임바
 
 Windows 11의 Xbox Game Bar 안에서 DIM과 데스티니 관련 사이트를 이용할 수 있는 비공식 위젯입니다. 하나의 WebView2에서 사이트를 이동하며, 기본 브라우저 위젯에서 발생하는 마우스 드래그·드롭 문제를 보완하는 코드를 포함합니다.
 
