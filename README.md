@@ -48,7 +48,7 @@ DIM, Light.gg, and Destiny Report are selected by default. The widget does not k
 
 Sign in directly on each website. The widget's cookies, cache, and login sessions are stored in its own WebView2 app data, separate from regular Edge or Chrome. Shortcut selections are saved in the Windows app's local settings. The app does not operate a separate account server or include password or token collection features. Each website's own policies apply to its handling of your data.
 
-## Known Limitations
+## Known Issues
 
 - Input response and image rendering may slow down when the game is under heavy load.
 - WebView2 memory usage may increase as you navigate between websites. The cause and memory-reclamation behavior are still being investigated.
@@ -56,15 +56,6 @@ Sign in directly on each website. The widget's cookies, cache, and login session
 - New-window requests open in the current webview. Some sign-in popups that require `window.opener` still need compatibility testing.
 - Windows ARM64 and Windows 10 are not supported by this package.
 
-## Build from Source
-
-Visual Studio 2022 or later is required, with the C# UWP/.NET Native tools, Windows SDK **10.0.26100.0**, and C++ x64 tools for Release builds. An internet connection is required to restore NuGet packages. The project cannot be built using only `dotnet build` from the standard .NET SDK.
-
-```powershell
-.\Build.ps1 -Configuration Debug
-```
-
-Alternatively, open `DimGameBar.sln`, build with the Debug/x64 configuration, and right-click the project → Deploy on a PC with Developer Mode enabled. The display name is Destiny Game Bar. The internal project and package identifiers remain DimGameBar to maintain continuity with existing installations.
 
 ## License and Attribution
 
@@ -118,7 +109,7 @@ Windows 11의 Xbox Game Bar 안에서 DIM과 데스티니 관련 사이트를 �
 
 각 사이트에서 직접 로그인합니다. 위젯의 쿠키·캐시·로그인 세션은 일반 Edge나 Chrome과 분리된 앱 전용 WebView2 저장소에 저장됩니다. 바로가기 선택은 Windows 앱의 로컬 설정에 저장됩니다. 앱 자체에는 별도 계정 서버나 비밀번호·토큰 수집 기능이 없습니다. 각 웹사이트의 데이터 처리에는 해당 사이트의 정책이 적용됩니다.
 
-## 알려진 제한
+## 확인된 이슈
 
 - 게임 부하가 높을 때 입력 반응과 이미지 표시가 느려질 수 있습니다.
 - 여러 사이트를 이동하면 WebView2 메모리 사용량이 증가할 수 있습니다. 원인과 메모리 반환 동작은 추가 확인 중입니다.
@@ -126,15 +117,6 @@ Windows 11의 Xbox Game Bar 안에서 DIM과 데스티니 관련 사이트를 �
 - 새 창 요청은 현재 웹뷰에서 열립니다. `window.opener`가 필요한 일부 로그인 팝업은 호환성 검증이 필요합니다.
 - Windows ARM64와 Windows 10은 이 패키지의 지원 대상이 아닙니다.
 
-## 소스에서 빌드
-
-Visual Studio 2022 이상과 C# UWP/.NET Native 도구, Windows SDK **10.0.26100.0**, Release 빌드용 C++ x64 도구가 필요합니다. NuGet 패키지 복원에는 인터넷 연결이 필요합니다. 일반 .NET SDK의 `dotnet build`만으로는 빌드할 수 없습니다.
-
-```powershell
-.\Build.ps1 -Configuration Debug
-```
-
-또는 `DimGameBar.sln`을 열어 Debug/x64 구성으로 빌드한 뒤, 개발자 모드가 활성화된 PC에서 프로젝트를 우클릭하고 배포(Deploy)를 실행합니다. 표시 이름은 Destiny Game Bar이며, 기존 설치와의 연속성을 유지하기 위해 내부 프로젝트·패키지 식별자는 DimGameBar를 사용합니다.
 
 ## 라이선스와 출처
 
