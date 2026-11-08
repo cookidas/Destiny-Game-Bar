@@ -1,7 +1,7 @@
 - [English](#english)
 - [한국어](#한국어)
 
-- 
+
 ## English
 # Destiny2 Game Bar
 
