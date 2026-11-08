@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8">
+<title>DIM 드래그 보정 검사</title>
+<style>
+  body { font: 16px system-ui; padding: 20px; }
+  #fixture { display: flex; gap: 20px; }
+  #fixture > div { box-sizing: border-box; width: 130px; height: 110px; padding: 10px; border: 2px solid #555; }
+  #source { display: block; box-sizing: border-box; width: 80px; height: 50px; padding: 8px; background: #afc; }
+  #accepted { background: #def; }
+  #rejected { background: #eee; }
+</style>
+<h1>DIM 드래그 보정 검사</h1>
+<div id="fixture"></div>
+<pre id="results"></pre>
+<script src="../DimGameBar/DragBridge.js"></script>
+<script>
+  const fixture = document.getElementById('fixture');
+  const results = document.getElementById('results');
+  let source, accepted, rejected, drops, ends, starts, payload, cancelStart = false;
+  let passed = 0;
+  const assert = (condition, message) => { if (!condition) throw new Error(message); };
+  const point = node => {
+    const rect = node.getBoundingClientRect();
+    return { clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2 };
+  };
+  function mouse(type, node, position = point(node), extra = {}) {
+    node.dispatchEvent(new PointerEvent(type, {
+      bubbles: true, cancelable: true, pointerId: 1, pointerType: 'mouse', isPrimary: true,
+      button: 0, buttons: type === 'pointerup' ? 0 : 1, ...position, ...extra,
+    }));
+  }
+  function reset() {
+    fixture.innerHTML = '<div id="home"><span id="source" draggable="true">아이템</span></div>' +
+      '<div id="accepted">허용</div><div id="rejected">거부</div>';
+    source = document.getElementById('source');
+    accepted = document.getElementById('accepted');
+    rejected = document.getElementById('rejected');
+    drops = starts = 0; ends = []; payload = null; cancelStart = false;
+    source.addEventListener('dragstart', event => {
+      starts++;
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', 'source');
+      if (cancelStart) event.preventDefault();
+    });
+    source.addEventListener('dragend', event => ends.push(event.dataTransfer.dropEffect));
+    accepted.addEventListener('dragover', event => event.preventDefault());
+    accepted.addEventListener('drop', event => {
+      event.preventDefault();
+      drops++;
+      payload = event.dataTransfer.getData('text/plain');
+      accepted.appendChild(source);
+    });
+  }
+  function dragTo(target) {
+    mouse('pointerdown', source);
+    mouse('pointermove', target);
+    mouse('pointerup', target);
+  }
+  function test(name, run) {
+    reset();
+    run();
+    assert(document.querySelectorAll('[aria-hidden="true"]').length === 0, '미리보기 정리 실패');
+    results.textContent += 'PASS ' + name + '\n';
+    passed++;
+  }
+  try {
+    test('클릭은 드래그가 되지 않음', () => {
+      const p = point(source);
+      let clicks = 0;
+      source.addEventListener('click', () => clicks++);
+      mouse('pointerdown', source, p);
+      mouse('pointermove', source, {clientX: p.clientX + 2, clientY: p.clientY});
+      mouse('pointerup', source, p);
+      source.click();
+      assert(starts === 0 && clicks === 1, '클릭 동작 변경');
+    });
+    test('허용된 드롭과 데이터 전달', () => {
+      dragTo(accepted);
+      assert(drops === 1 && payload === 'source' && source.parentElement === accepted,
+        '드롭 실패: ' + JSON.stringify({starts, drops, payload, ends, parent: source.parentElement?.id}));
+      assert(starts === 1 && ends.join() === 'move', '드래그 수명 주기 오류');
+      let clicks = 0;
+      source.addEventListener('click', () => clicks++);
+      source.click();
+      assert(clicks === 0, '드래그 뒤 불필요한 클릭 발생');
+    });
+    test('거부된 영역에서는 이동하지 않음', () => {
+      dragTo(rejected);
+      assert(drops === 0 && ends.join() === 'none', '거부된 드롭 실행');
+    });
+    test('Escape 취소', () => {
+      mouse('pointerdown', source); mouse('pointermove', accepted);
+      window.dispatchEvent(new KeyboardEvent('keydown', {key: 'Escape', cancelable: true}));
+      mouse('pointerup', accepted);
+      assert(drops === 0 && ends.join() === 'none', '취소 뒤 이동 발생');
+    });
+    test('포커스 상실 취소', () => {
+      mouse('pointerdown', source); mouse('pointermove', accepted);
+      window.dispatchEvent(new Event('blur'));
+      mouse('pointerup', accepted);
+      assert(drops === 0 && ends.join() === 'none', '포커스 상실 뒤 이동 발생');
+    });
+    test('웹뷰 밖으로 나가면 취소', () => {
+      mouse('pointerdown', source); mouse('pointermove', accepted);
+      mouse('pointerout', accepted, point(accepted), {relatedTarget: null});
+      mouse('pointerup', accepted);
+      assert(drops === 0 && ends.join() === 'none', '영역 이탈 뒤 이동 발생');
+    });
+    test('마지막 포인터 위치로 드롭 판단', () => {
+      mouse('pointerdown', source); mouse('pointermove', accepted); mouse('pointerup', rejected);
+      assert(drops === 0 && ends.join() === 'none', '이전 위치에 잘못 드롭');
+    });
+    test('페이지가 취소한 dragstart 존중', () => {
+      cancelStart = true;
+      dragTo(accepted);
+      assert(starts === 1 && drops === 0 && ends.length === 0, 'dragstart 취소 무시');
+    });
+    test('오른쪽 버튼과 터치 입력 유지', () => {
+      mouse('pointerdown', source, point(source), {button: 2, buttons: 2});
+      mouse('pointermove', accepted); mouse('pointerup', accepted);
+      mouse('pointerdown', source, point(source), {pointerType: 'touch'});
+      mouse('pointermove', accepted, point(accepted), {pointerType: 'touch'});
+      mouse('pointerup', accepted, point(accepted), {pointerType: 'touch'});
+      assert(starts === 0, '다른 입력 방식을 가로챔');
+    });
+    test('취소 후 다시 드래그 가능', () => {
+      mouse('pointerdown', source); mouse('pointermove', accepted);
+      mouse('pointercancel', source);
+      dragTo(accepted);
+      assert(drops === 1 && ends.join() === 'none,move', '취소 상태가 남음');
+    });
+    document.body.dataset.result = 'pass';
+    results.textContent += '\n' + passed + ' tests passed';
+  } catch (error) {
+    document.body.dataset.result = 'fail';
+    results.textContent += '\nFAIL ' + error.stack;
+  }
+</script>
+</html>
