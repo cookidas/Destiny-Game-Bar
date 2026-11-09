@@ -55,7 +55,7 @@ Sign in directly on each website. The widget's cookies, cache, and login session
 - WebView2 memory usage may increase as you navigate between websites. The cause and memory-reclamation behavior are still being investigated.
 - The drag-and-drop workaround applies only to mouse input on the top-level DIM page. It does not cover touch dragging or dragging files from outside the webview.
 - New-window requests open in the current webview. Some sign-in popups that require `window.opener` still need compatibility testing.
-- Windows ARM64 and Windows 10 are not supported by this package.
+- Support for Windows ARM64 and Windows 10 has not been confirmed.
 
 
 ## License and Attribution
@@ -117,7 +117,7 @@ Windows 11의 Xbox Game Bar 안에서 DIM과 데스티니 관련 사이트를 �
 - 여러 사이트를 이동하면 WebView2 메모리 사용량이 증가할 수 있습니다. 원인과 메모리 반환 동작은 추가 확인 중입니다.
 - 드래그 보정은 최상위 DIM 페이지의 마우스 입력에만 적용됩니다. 터치 드래그나 웹뷰 밖에서 파일을 끌어오는 동작은 보정하지 않습니다.
 - 새 창 요청은 현재 웹뷰에서 열립니다. `window.opener`가 필요한 일부 로그인 팝업은 호환성 검증이 필요합니다.
-- Windows ARM64와 Windows 10은 이 패키지의 지원 대상이 아닙니다.
+- Windows ARM64와 Windows 10에서 지원 여부는 확인되지 않았습니다.
 
 ## 라이선스와 출처
 
