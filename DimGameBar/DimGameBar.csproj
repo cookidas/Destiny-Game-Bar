@@ -53,6 +53,7 @@
     <Content Include="Assets\EngramBlueFavicon.png" />
     <Content Include="Assets\GuardianReportFavicon.png" />
     <Content Include="Assets\DestinyTrackerFavicon.png" />
+    <Content Include="Assets\GodrollFavicon.png" />
     <Content Include="Assets\SplashScreen.png" />
     <Content Include="Assets\Square150x150Logo.png" />
     <Content Include="Assets\Square44x44Logo.png" />

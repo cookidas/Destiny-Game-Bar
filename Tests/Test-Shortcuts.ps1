@@ -47,21 +47,26 @@ public class Harness {
 $checks = @'
  static void Check(bool ok, string message) { if (!ok) throw new Exception(message); }
  public static void Run() {
-  var names = new[] { "DIM", "Light.gg", "Destiny Report", "D2ArmorPicker", "Raid Report", "Bray.Tech", "Blueberries.gg", "Engram.Blue", "Guardian.Report", "DestinyTracker" };
+  var names = new[] { "DIM", "Light.gg", "Destiny Report", "D2ArmorPicker", "Raid Report", "Bray.Tech", "Blueberries.gg", "Engram.Blue", "Guardian.Report", "DestinyTracker", "Godroll.tv" };
   var page = new Harness();
-  Check(page.ShortcutBar.Children.Count == 10 && page.ShortcutOptions.Children.Count == 10, "Missing shortcut or checkbox");
-  for (int i=0; i<10; i++) {
+  Check(page.ShortcutBar.Children.Count == names.Length && page.ShortcutOptions.Children.Count == names.Length, "Missing shortcut or checkbox");
+  for (int i=0; i<names.Length; i++) {
    var option=(CheckBox)page.ShortcutOptions.Children[i]; var row=(StackPanel)option.Content;
    Check(((TextBlock)row.Children[1]).Text == names[i], "Menu order or label changed");
    Check(row.Children[0] is Image && ((Button)page.ShortcutBar.Children[i]).Content is Image, "Favicon missing");
    Check(option.IsChecked == (i<3), "Default selection changed");
   }
   ((CheckBox)page.ShortcutOptions.Children[9]).IsChecked=true;
+  ((CheckBox)page.ShortcutOptions.Children[10]).IsChecked=true;
+  Check((string)((Button)page.ShortcutBar.Children[10]).Tag=="https://godroll.tv/", "Godroll URL changed");
+  Check(((Button)page.ShortcutBar.Children[10]).Visibility==Visibility.Visible, "Godroll icon not shown");
+  Check(ApplicationData.Current.LocalSettings.Values["Shortcut:https://godroll.tv/"] is bool && (bool)ApplicationData.Current.LocalSettings.Values["Shortcut:https://godroll.tv/"], "Godroll setting not saved");
   ((CheckBox)page.ShortcutOptions.Children[0]).IsChecked=false;
   Check(((Button)page.ShortcutBar.Children[9]).Visibility==Visibility.Visible, "Check did not show selected icon");
   Check(((Button)page.ShortcutBar.Children[0]).Visibility==Visibility.Collapsed, "Uncheck did not hide selected icon");
   var reopened=new Harness();
   Check(((CheckBox)reopened.ShortcutOptions.Children[9]).IsChecked==true && ((CheckBox)reopened.ShortcutOptions.Children[0]).IsChecked==false, "Selections not restored");
+  Check(((CheckBox)reopened.ShortcutOptions.Children[10]).IsChecked==true, "Godroll selection not restored");
   Check(((CheckBox)reopened.ShortcutOptions.Children[1]).IsChecked==true, "Other selection changed");
   foreach (CheckBox option in reopened.ShortcutOptions.Children) option.IsChecked=false;
   Check(new Harness().ShortcutBar.Children.Cast<Button>().All(b=>b.Visibility==Visibility.Collapsed), "Empty selection not preserved");
@@ -81,4 +86,4 @@ foreach ($match in [regex]::Matches($production, '"([A-Za-z]+Favicon\.png)"')) {
     $bytes = [IO.File]::ReadAllBytes((Join-Path $project $path))
     if ([BitConverter]::ToString($bytes[0..7]) -ne '89-50-4E-47-0D-0A-1A-0A') { throw "Invalid PNG: $path" }
 }
-Write-Output 'PASS: 10 ordered menu items; toggle show/hide; saved selection; empty/all selections; packaged PNGs; XAML XML'
+Write-Output 'PASS: 11 ordered menu items; toggle show/hide; saved selection; Godroll URL and persistence; empty/all selections; packaged PNGs; XAML XML'

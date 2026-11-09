@@ -29,6 +29,10 @@ function Read-PackageManifest($path) {
 $package = @(Get-ChildItem -LiteralPath $temp -Filter 'DestinyGameBar_*.msix')
 if ($package.Count -ne 1) { throw 'Expected one MSIX' }
 $manifest = Read-PackageManifest $package[0].FullName
+$batch = Get-Content (Join-Path $temp 'install.bat') -Raw
+if ($batch -notmatch '-EncodedCommand ([A-Za-z0-9+/=]+)') { throw 'Missing BAT installer command' }
+$batchScript = [Text.Encoding]::Unicode.GetString([Convert]::FromBase64String($Matches[1]))
+if (-not $batchScript.Contains("DestinyGameBar_$($manifest.Package.Identity.Version)_x64.msix")) { throw 'BAT installer version mismatch' }
 if ($manifest.Package.Identity.ProcessorArchitecture -ne 'x64' -or $manifest.Package.Identity.Publisher -ne $certificate.Subject) {
     throw 'Unexpected package architecture or publisher'
 }
@@ -49,6 +53,6 @@ try {
     $cms.Decode([byte[]]$bytes[4..($bytes.Length - 1)])
     $cms.CheckSignature($true)
     if ($cms.SignerInfos[0].Certificate.Thumbprint -ne $certificate.Thumbprint) { throw 'Signer certificate mismatch' }
-    if (@($zip.Entries | Where-Object FullName -like 'Assets/*Favicon.png').Count -ne 10) { throw 'Missing packaged favicons' }
+    if (@($zip.Entries | Where-Object FullName -like 'Assets/*Favicon.png').Count -ne 11 -or -not $zip.GetEntry('Assets/GodrollFavicon.png')) { throw 'Missing packaged favicons' }
 } finally { $zip.Dispose() }
-Write-Output "PASS: release checksums, MSIX signature, public certificate, 10 favicons, all framework dependencies; version $($manifest.Package.Identity.Version)"
+Write-Output "PASS: release checksums, MSIX signature, public certificate, 11 favicons including Godroll, all framework dependencies; version $($manifest.Package.Identity.Version)"

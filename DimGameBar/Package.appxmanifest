@@ -10,7 +10,7 @@
   <Identity
     Name="DimGameBar"
     Publisher="CN=DimGameBar"
-    Version="1.0.1.0" />
+    Version="1.0.2.0" />
 
   <mp:PhoneIdentity PhoneProductId="d7b7bf84-9324-4f6c-86a1-bfa23374915c" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
 

@@ -86,6 +86,7 @@ if (Test-Path -LiteralPath $dependencies) {
     Copy-Item -LiteralPath $dependencies -Destination $dependencyOutput -Recurse
 }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'Release/Install.ps1') -Destination $payload
+Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'Release/install.bat') -Destination $payload
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'Release/INSTALL.md') -Destination (Join-Path $payload 'README.md')
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'LICENSE') -Destination $payload
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'THIRD-PARTY-NOTICES.md') -Destination $payload

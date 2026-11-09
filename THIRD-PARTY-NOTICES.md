@@ -26,6 +26,7 @@ Icons are included to identify navigation destinations. No ownership of these ic
 | EngramBlueFavicon.png | https://engram.blue/favicon.png |
 | GuardianReportFavicon.png | https://guardian.report/assets/favicon/favicon-32x32.png |
 | DestinyTrackerFavicon.png | Google's favicon cache for destinytracker.com |
+| GodrollFavicon.png | https://godroll.tv/favicon.png |
 
 ## Tests only
 

@@ -23,6 +23,7 @@ namespace DimGameBar
             ("Engram.Blue", "https://engram.blue/", "EngramBlueFavicon.png"),
             ("Guardian.Report", "https://guardian.report/", "GuardianReportFavicon.png"),
             ("DestinyTracker", "https://destinytracker.com/", "DestinyTrackerFavicon.png"),
+            ("Godroll.tv", "https://godroll.tv/", "GodrollFavicon.png"),
         };
         private bool started;
         private bool closed;
